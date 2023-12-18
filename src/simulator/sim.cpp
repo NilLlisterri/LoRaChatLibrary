@@ -122,8 +122,8 @@ void Sim::simLoop(void* pvParameters) {
 
         ESP_LOGV(SIM_TAG, "Simulator connecting to WiFi");
 
-        WiFiServerService::getInstance().addSSID(WIFI_SSID);
-        WiFiServerService::getInstance().addPassword(WIFI_PASSWORD);
+        WiFiServerService::getInstance().addSSID(SIMULATOR_WIFI_SSID);
+        WiFiServerService::getInstance().addPassword(SIMULATOR_WIFI_PASSWORD);
 
         WiFiServerService::getInstance().connectWiFi();
 
@@ -265,8 +265,8 @@ SimMessage* Sim::createSimMessage(SimCommand command) {
 }
 
 void Sim::sendStartSimMessage() {
-    WiFiServerService::getInstance().addSSID(WIFI_SSID);
-    WiFiServerService::getInstance().addPassword(WIFI_PASSWORD);
+    WiFiServerService::getInstance().addSSID(SIMULATOR_WIFI_SSID);
+    WiFiServerService::getInstance().addPassword(SIMULATOR_WIFI_PASSWORD);
 
     WiFiServerService::getInstance().connectWiFi();
 

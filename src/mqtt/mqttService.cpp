@@ -2,10 +2,14 @@
 
 static const char* MQTT_TAG = "MQTT";
 
-void MqttService::initMqtt(String lclName) {
+void MqttService::initMqtt(String lclName, String mqtt_server, uint mqtt_port, String mqtt_username, String mqtt_password) {
     ESP_LOGI(MQTT_TAG, "Initializing mqtt");
 
-    localName = lclName;
+    this->mqtt_server = mqtt_server;
+    this->mqtt_port = mqtt_port;
+    this->mqtt_username = mqtt_username;
+    this->mqtt_password = mqtt_password;
+    this->localName = lclName;
 
     mqtt_service_init(lclName.c_str());
 
@@ -203,7 +207,7 @@ static void mqtt_event_handler(void* handler_args, esp_event_base_t base, int32_
 }
 
 void MqttService::mqtt_app_start(const char* client_id) {
-    String uri = "mqtt://" + String(MQTT_SERVER) + ":" + String(MQTT_PORT);
+    String uri = "mqtt://" + String(this->mqtt_server) + ":" + String(this->mqtt_port);
 
     ESP_LOGI(MQTT_TAG, "MQTT URI: %s", uri.c_str());
 
@@ -233,7 +237,11 @@ void MqttService::mqtt_service_subscribe(const char* topic) {
 void MqttService::mqtt_service_send(const char* topic, const char* data, int len) {
     int msg_id;
     msg_id = esp_mqtt_client_publish(client, topic, data, len, 2, 0);
-    ESP_LOGI(MQTT_TAG, "sent publish successful, msg_id %d", msg_id);
+    if (msg_id > 0) {
+        ESP_LOGI(MQTT_TAG, "sent publish successful, msg_id %d", msg_id);
+    } else {
+        ESP_LOGE(MQTT_TAG, "ESP MQTT client publish failed, error code: %d", msg_id);
+    }
 }
 
 void MqttService::process_message(const char* topic, const char* payload) {
